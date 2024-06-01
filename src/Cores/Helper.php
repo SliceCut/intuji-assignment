@@ -4,6 +4,7 @@ use App\Cores\FlashMessage;
 use App\Cores\Session;
 use App\Cores\Str;
 use App\Cores\Validation;
+use App\Providers\AppServiceProvider;
 use App\View;
 
 function env(string $key)
@@ -68,4 +69,45 @@ function formMethod($method)
 function slugify($text, string $divider = '-')
 {
     return Str::slugify($text, $divider);
+}
+
+/**
+ * Get a value from a nested array using dot notation for keys.
+ *
+ * @param array $array The array to search.
+ * @param string $key The dot-notated key string.
+ * @param mixed $default The default value to return if the key is not found.
+ * @return mixed The value found in the array or the default value.
+ */
+function array_get($array, $key, $default = null) {
+    if (!is_array($array)) {
+        return $default;
+    }
+
+    if (array_key_exists($key, $array)) {
+        return $array[$key];
+    }
+
+    $keys = explode('.', $key);
+
+    foreach ($keys as $key) {
+        if (!is_array($array) || !array_key_exists($key, $array)) {
+            return $default;
+        }
+        $array = $array[$key];
+    }
+
+    return $array;
+}
+
+/**
+ * Get the value from the configuration file
+ * 
+ * @param string $key
+ * @param ?mixed $default
+ * @return mixed
+ */
+function config($key, $default = null)
+{
+    return AppServiceProvider::getInstance()->getConfig($key, $default);
 }

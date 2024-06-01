@@ -4,3 +4,16 @@ body {
 .invalid-error {
     color: red;
 }
+
+.content-center {
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+    flex-direction: column;
+}
+
+.content-center > div {
+    width: 50%;
+    margin: auto;
+    text-align: center;
+}

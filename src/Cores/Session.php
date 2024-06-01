@@ -2,8 +2,6 @@
 
 namespace App\Cores;
 
-session_start();
-
 class Session
 {
     /**
@@ -27,11 +25,6 @@ class Session
     public static function delByKey(string $key)
     {
         unset($_SESSION[$key]);
-    }
-
-    public static function clearAll()
-    {
-        return session_destroy();
     }
 
     public static function exists(string $key)

@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+// Start the session
+session_start();
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
