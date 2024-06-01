@@ -16,10 +16,12 @@ class Router
 
     private $request;
     private $middlewareRegistration;
+    private $container;
 
-    public function __construct(Request $request, MiddlewareRegistration $middlewareRegistration)
+    public function __construct(Container $container, Request $request, MiddlewareRegistration $middlewareRegistration)
     {
         $this->handlers = [];
+        $this->container = $container;
         $this->request = $request;
         $this->middlewareRegistration = $middlewareRegistration;
     }
@@ -79,7 +81,7 @@ class Router
             if (is_array($parts)) {
                 $className = array_shift($parts);
 
-                $handler = new $className;
+                $handler = $this->container->get($className);
 
                 $method = array_shift($parts);
 

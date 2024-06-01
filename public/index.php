@@ -17,7 +17,7 @@ use App\DB;
 use App\MiddlewareRegistration;
 use App\Router;
 
-$router = new Router(new Request, new MiddlewareRegistration);
+$router = new Router(new Container, new Request, new MiddlewareRegistration);
 $config = new Config($_ENV);
 $db = new DB($config->db);
 $error = new ErrorBag();
