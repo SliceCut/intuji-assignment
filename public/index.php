@@ -18,9 +18,15 @@ use App\Cores\FlashMessage;
 use App\Cores\Request;
 use App\DB;
 use App\MiddlewareRegistration;
+use App\Providers\AppServiceProvider;
 use App\Router;
 
-$router = new Router(new Container, new Request, new MiddlewareRegistration);
+$container = Container::getInstance();
+$container->singleton(AppServiceProvider::class, function () use ($container) {
+    return new AppServiceProvider($container);
+});
+
+$router = new Router($container, new Request, new MiddlewareRegistration);
 $config = new Config($_ENV);
 $db = new DB($config->db);
 $error = new ErrorBag();

@@ -37,7 +37,12 @@ class App
         return Session::get(self::ERROR_BAG, static::$error);
     }
 
-    public static function flashMessage(): FlashMessage
+    /**
+     * Get the flash message object
+     *
+     * @return FlashMessage
+     */
+    public static function flashMessage()
     {
         return Session::get(self::FLASH_SESSION, static::$flashMessage);
     }

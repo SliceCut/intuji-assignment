@@ -2,10 +2,12 @@
 
 namespace App;
 
+use App\Middlewares\Authenticate;
+
 class MiddlewareRegistration
 {
     protected $middlewareWeb = [
-        //put here your middleware
+        "auth" => Authenticate::class
     ];
 
     public function getMiddlewareWeb()

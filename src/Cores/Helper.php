@@ -1,5 +1,6 @@
 <?php
 
+use App\Cores\Container;
 use App\Cores\FlashMessage;
 use App\Cores\Session;
 use App\Cores\Str;
@@ -10,6 +11,16 @@ use App\View;
 function env(string $key)
 {
     return $_ENV[$key] ?? null;
+}
+
+/**
+ * Get the app container
+ * 
+ * @return  Container
+ */
+function app()
+{
+    return Container::getInstance();
 }
 
 function baseUrl(string $path = '')
@@ -48,7 +59,17 @@ function redirect(string $url, array $flashMessages = [])
 
     Session::put(FlashMessage::SESSION_FLASH_MESSAGE, $FlashMessageObj);
 
-    header('Location: ' . str_replace('/\/\//g', '/', baseUrl($url)));
+    if (is_valid_url($url)) {
+        $target = $url;
+    } else {
+        $target = str_replace('/\/\//g', '/', baseUrl($url));
+    }
+    header('Location: ' . $target);
+}
+
+function redirectExternal(string $url)
+{
+    header('Location: ' . $url);
 }
 
 function previousUrl()
@@ -79,7 +100,8 @@ function slugify($text, string $divider = '-')
  * @param mixed $default The default value to return if the key is not found.
  * @return mixed The value found in the array or the default value.
  */
-function array_get($array, $key, $default = null) {
+function array_get($array, $key, $default = null)
+{
     if (!is_array($array)) {
         return $default;
     }
@@ -109,5 +131,31 @@ function array_get($array, $key, $default = null) {
  */
 function config($key, $default = null)
 {
-    return AppServiceProvider::getInstance()->getConfig($key, $default);
+    return app()->make(AppServiceProvider::class)->getConfig($key, $default); 
+    // AppServiceProvider::getInstance()->getConfig($key, $default);
+}
+
+/**
+ * Check if url is valid http url
+ *
+ * @param string $url
+ * @return boolean
+ */
+function is_valid_url($url)
+{
+    return filter_var($url, FILTER_VALIDATE_URL) !== false;
+}
+
+/**
+ * Return a JSON response
+ *
+ * @param mixed $data The data to encode as JSON
+ * @param int $status_code The HTTP status code (default 200)
+ */
+function jsonResponse($data, $status_code = 200)
+{
+    header('Content-Type: application/json');
+    http_response_code($status_code);
+    echo json_encode($data);
+    exit;
 }

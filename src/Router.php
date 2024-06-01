@@ -91,8 +91,8 @@ class Router
             foreach (is_array($middlewares) ? $middlewares : [$middlewares] as $middleware) {
                 if (isset($this->middlewareRegistration->getMiddlewareWeb()[$middleware])) {
                     $middlewareClassName = $this->middlewareRegistration->getMiddlewareWeb()[$middleware];
-                    $resolveMiddleware = new $middlewareClassName;
-                    $resolveMiddleware->handle(currentUrl());
+                    $resolveMiddleware = $this->container->get($middlewareClassName);
+                    $resolveMiddleware->handle(currentUrl(), $this->request);
                 }
             }
         }

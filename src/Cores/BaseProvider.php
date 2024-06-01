@@ -4,25 +4,13 @@ namespace App\Cores;
 
 class BaseProvider
 {
-    // Hold the class instance.
-    private static $instance = null;
-
+    protected $container;
     protected array $configs = [];
 
-    public function __construct()
+    public function __construct(Container $container)
     {
+        $this->container = $container;
         $this->register();
-    }
-
-    // The single method to get the instance of the class.
-    public static function getInstance()
-    {
-        if (self::$instance === null) {
-            $className = get_called_class();
-            self::$instance = new $className;
-        }
-
-        return self::$instance;
     }
 
     public function register(): void

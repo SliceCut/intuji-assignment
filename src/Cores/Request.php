@@ -18,6 +18,11 @@ class Request
         return $this->data;
     }
 
+    public function put(string $key, $data)
+    {
+        $this->data[$key] = $data;
+    }
+
     public function get(string $key, $default = null)
     {
         return RequestRequest::get('GET')[$key] ?? $default;
