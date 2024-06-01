@@ -1,0 +1,15 @@
+DirectoryIndex index.php
+
+# enable apache rewrite engine
+RewriteEnging on
+
+# set your rewrite base
+# Edit this in your init method too if your script lives in a subfolder
+RewriteBase /
+
+# Deliver the folder or  file directory if it exists on the stream_socket_server
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Push every request to index.php
+RewriteRule ^(.*)$ index.php [QSA]
