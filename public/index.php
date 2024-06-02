@@ -2,10 +2,15 @@
 
 declare(strict_types=1);
 
+use App\Cores\BaseExceptionHandler;
+
 // Start the session
 session_start();
 
 require_once __DIR__ . '/../vendor/autoload.php';
+
+// Set the custom exception handler
+set_exception_handler([BaseExceptionHandler::class, 'handleException']);
 
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->load();
