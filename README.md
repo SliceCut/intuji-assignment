@@ -8,6 +8,9 @@ This project is about event mangement system where use will connect to google ca
 - Css
 - Javascript
 
+## Coding Standard
+- PSR12[goto](https://www.php-fig.org/psr/psr-12/)
+
 ## Environment Required
 - Xampp/Apache
 - PHP ^8
