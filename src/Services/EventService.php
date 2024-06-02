@@ -23,7 +23,7 @@ class EventService
     {
         $query_params = [
             "key" => config("oauth.api_key"),
-            "maxResults" => $request->get("per_page", 1)
+            "maxResults" => $request->get("per_page", 10)
         ];
 
         if ($request->get("current")) {
