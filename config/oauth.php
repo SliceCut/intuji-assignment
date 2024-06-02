@@ -1,7 +1,6 @@
 <?php
 
 return [
-    "grant_type" => "authorization_code",
     "access_type" => env("OAUTH_ACCESS_TYPE", "online"),
     "state" => env("OAUTH_STATE", "random_state"),
     "redirect_uri" => env("OAUTH_REDIRECT_URI"),

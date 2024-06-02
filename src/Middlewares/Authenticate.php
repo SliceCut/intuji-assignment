@@ -21,16 +21,41 @@ class Authenticate extends Middleware
     public function handle($next, Request $request)
     {
         try {
+            $access_token = $this->session->get("access_token");
+            if (!$access_token) {
+                return $this->clearSessionAndRedirect();
+            }
             $user = $this->authService->getAuthUserInfo(
-                access_token: $this->session->get("access_token")
+                access_token: $access_token
             );
             $this->auth->setUser($user);
             return $next;
         } catch (Exception $ex) {
             if ($ex->getCode() == 401) {
-                return redirect("");
+                return $this->handleRefreshToken($next, $request);
             }
             throw $ex;
         }
+    }
+
+    protected function handleRefreshToken($next, $request): mixed
+    {
+        $refresh_token = $this->session->get("refresh_token");
+        if ($refresh_token) {
+            try {
+                $this->authService->oauthRefreshToken($this->session->get("refresh_token"));
+                return $this->handle($next, $request);
+            } catch (Exception $ex) {
+                return $this->clearSessionAndRedirect();
+            }
+        }
+
+        return $this->clearSessionAndRedirect();;
+    }
+
+    protected function clearSessionAndRedirect(): mixed
+    {
+        $this->authService->clearSession();
+        return redirect("");
     }
 }

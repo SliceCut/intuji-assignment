@@ -33,7 +33,7 @@ class AuthService
                 "client_id" => config("oauth.client_id"),
                 "client_secret" => config("oauth.client_secret"),
                 "redirect_uri" => config("oauth.redirect_uri"),
-                "grant_type" => config("oauth.grant_type")
+                "grant_type" => "authorization_code"
             ]
         );
 
@@ -44,7 +44,28 @@ class AuthService
 
         $this->session->put("access_token", $access_token);
         $this->session->put("refresh_token", $refresh_token);
-        $this->session->put("user_info", $this->getAuthUserInfo($access_token));
+    }
+
+    public function oauthRefreshToken(string $refresh_token)
+    {
+        $response = $this->httpService->post(
+            url: config("oauth.token_url"),
+            request_data: [
+                "refresh_tokens" => $refresh_token,
+                "client_id" => config("oauth.client_id"),
+                "client_secret" => config("oauth.client_secret"),
+                "redirect_uri" => config("oauth.redirect_uri"),
+                "grant_type" => "refresh_token"
+            ]
+        );
+
+        $this->throwException($response);
+
+        $access_token = $response["payload"]["access_token"];
+        $refresh_token = $response["payload"]["refresh_token"];
+
+        $this->session->put("access_token", $access_token);
+        $this->session->put("refresh_token", $refresh_token);
     }
 
     public function oauthRedirect(): string
@@ -74,6 +95,12 @@ class AuthService
         $this->throwException($response);
 
         return $response["payload"];
+    }
+
+    public function clearSession()
+    {
+        $this->session->delByKey("access_token");
+        $this->session->delByKey("refresh_token");
     }
 
     /**

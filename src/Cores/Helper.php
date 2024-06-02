@@ -131,7 +131,7 @@ function array_get($array, $key, $default = null)
  */
 function config($key, $default = null)
 {
-    return app()->make(AppServiceProvider::class)->getConfig($key, $default); 
+    return app()->make(AppServiceProvider::class)->getConfig($key, $default);
     // AppServiceProvider::getInstance()->getConfig($key, $default);
 }
 
@@ -157,5 +157,11 @@ function jsonResponse($data, $status_code = 200)
     header('Content-Type: application/json');
     http_response_code($status_code);
     echo json_encode($data);
+    exit;
+}
+
+function dd(...$arg)
+{
+    var_dump($arg);
     exit;
 }
