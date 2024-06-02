@@ -84,7 +84,7 @@
                                         Delete
                                     </button>
                                 </form>
-                                <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#event_<?php echo $item["id"] ?>">
+                                <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#event_<?php echo $item["id"] ?>">
                                     View
                                 </button>
                             </div>
