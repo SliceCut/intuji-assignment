@@ -4,19 +4,21 @@ namespace App\Services;
 
 use App\Cores\Request;
 use App\Cores\Session;
-use App\Exceptions\UnauthorizedException;
+use App\Traits\HandleException;
 use Exception;
 use InvalidArgumentException;
 
 class AuthService
 {
+    use HandleException;
+
     public function __construct(
         protected HttpService $httpService,
         protected Session $session
     ) {
     }
 
-    public function oauthToken(Request $request): void
+    public function oauthToken(Request $request): array
     {
         if ($error = $request->get("error")) {
             throw new Exception($error, 400);
@@ -44,14 +46,19 @@ class AuthService
 
         $this->session->put("access_token", $access_token);
         $this->session->put("refresh_token", $refresh_token);
+
+        return [
+            "access_token" => $access_token,
+            "refresh_token" => $refresh_token
+        ];
     }
 
-    public function oauthRefreshToken(string $refresh_token)
+    public function oauthRefreshToken(string $refresh_token): array
     {
         $response = $this->httpService->post(
             url: config("oauth.token_url"),
             request_data: [
-                "refresh_tokens" => $refresh_token,
+                "refresh_token" => $refresh_token,
                 "client_id" => config("oauth.client_id"),
                 "client_secret" => config("oauth.client_secret"),
                 "redirect_uri" => config("oauth.redirect_uri"),
@@ -62,10 +69,14 @@ class AuthService
         $this->throwException($response);
 
         $access_token = $response["payload"]["access_token"];
-        $refresh_token = $response["payload"]["refresh_token"];
 
         $this->session->put("access_token", $access_token);
         $this->session->put("refresh_token", $refresh_token);
+
+        return [
+            "access_token" => $access_token,
+            "refresh_token" => $refresh_token
+        ];
     }
 
     public function oauthRedirect(): string
@@ -101,24 +112,5 @@ class AuthService
     {
         $this->session->delByKey("access_token");
         $this->session->delByKey("refresh_token");
-    }
-
-    /**
-     * Throw a exception if response status is not 200
-     * 
-     * @throws UnauthorizedException
-     * @throws Exception
-     */
-    public function throwException($response): void
-    {
-        if ($response["status"] != 200) {
-            if (in_array($response["status"], [401, 403])) {
-                throw new UnauthorizedException(
-                    message: $response["payload"]["error"],
-                    code: $response["status"]
-                );
-            }
-            throw new Exception($response["payload"]["error"], $response["status"]);
-        }
     }
 }

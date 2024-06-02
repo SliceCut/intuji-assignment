@@ -6,11 +6,18 @@ use App\Cores\Session;
 use App\Cores\Str;
 use App\Cores\Validation;
 use App\Providers\AppServiceProvider;
+use App\Services\Singleton\Auth;
 use App\View;
 
 function env(string $key)
 {
     return $_ENV[$key] ?? null;
+}
+
+function dd(...$arg)
+{
+    var_dump($arg);
+    exit;
 }
 
 /**
@@ -160,8 +167,12 @@ function jsonResponse($data, $status_code = 200)
     exit;
 }
 
-function dd(...$arg)
+/**
+ * Get the user authentication ojbect
+ * 
+ * @return Auth
+ */
+function auth()
 {
-    var_dump($arg);
-    exit;
+    return app()->get(Auth::class);
 }

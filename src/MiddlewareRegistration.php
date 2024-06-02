@@ -3,11 +3,13 @@
 namespace App;
 
 use App\Middlewares\Authenticate;
+use App\Middlewares\Guest;
 
 class MiddlewareRegistration
 {
     protected $middlewareWeb = [
-        "auth" => Authenticate::class
+        "auth" => Authenticate::class,
+        "guest" => Guest::class
     ];
 
     public function getMiddlewareWeb()

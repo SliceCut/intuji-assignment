@@ -29,6 +29,7 @@ class Authenticate extends Middleware
                 access_token: $access_token
             );
             $this->auth->setUser($user);
+            $this->auth->setToken($access_token);
             return $next;
         } catch (Exception $ex) {
             if ($ex->getCode() == 401) {
@@ -43,7 +44,7 @@ class Authenticate extends Middleware
         $refresh_token = $this->session->get("refresh_token");
         if ($refresh_token) {
             try {
-                $this->authService->oauthRefreshToken($this->session->get("refresh_token"));
+                $response = $this->authService->oauthRefreshToken($refresh_token);
                 return $this->handle($next, $request);
             } catch (Exception $ex) {
                 return $this->clearSessionAndRedirect();
