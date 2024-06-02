@@ -21,6 +21,6 @@ class View
         $error = App::error();
         $flashMessage = App::flashMessage();
 
-        require_once dirname(__DIR__) . "/views/$path";
+        require dirname(__DIR__) . "/views/$path";
     }
 }
