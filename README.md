@@ -28,3 +28,11 @@ This project is about event mangement system where use will connect to google ca
     - API_KEY
     - OAUTH_CLIENT_ID
     - OAUTH_CLIENT_SECRET
+
+## Things to do in Google Console Dashboard
+- Enable google calender api in google console 
+- Add Scopes
+    - /auth/calendar
+    - /auth/calendar.events
+    - /auth/userinfo.email
+    - /auth/userinfo.profile
