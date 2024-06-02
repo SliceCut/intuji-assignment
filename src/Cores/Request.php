@@ -33,6 +33,11 @@ class Request
         return RequestRequest::get('POST')[$key] ?? $default;
     }
 
+    public function merge(array $data)
+    {
+        $this->data = array_merge($this->data, $data);
+    }
+
     public function file($key)
     {
         return $_FILES[$key];

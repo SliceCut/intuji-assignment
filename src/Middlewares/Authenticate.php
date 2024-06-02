@@ -45,6 +45,7 @@ class Authenticate extends Middleware
         if ($refresh_token) {
             try {
                 $response = $this->authService->oauthRefreshToken($refresh_token);
+                $this->auth->setToken($response["access_token"]);
                 return $this->handle($next, $request);
             } catch (Exception $ex) {
                 return $this->clearSessionAndRedirect();

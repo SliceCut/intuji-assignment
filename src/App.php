@@ -34,7 +34,13 @@ class App
 
     public static function error(): ErrorBag
     {
-        return Session::get(self::ERROR_BAG, static::$error);
+        $errorBag = Session::get(self::ERROR_BAG);
+
+        if ($errorBag) {
+            return unserialize($errorBag);
+        }
+
+        return static::$error;
     }
 
     /**
@@ -42,9 +48,13 @@ class App
      *
      * @return FlashMessage
      */
-    public static function flashMessage()
+    public static function flashMessage(): FlashMessage
     {
-        return Session::get(self::FLASH_SESSION, static::$flashMessage);
+        $flasMessage = Session::get(self::FLASH_SESSION);
+        if ($flasMessage) {
+            return unserialize($flasMessage);
+        }
+        return static::$flashMessage;
     }
 
     public function prepareData()
@@ -52,14 +62,19 @@ class App
         /**
          * Get the session validation error data, delete session validation error data and put error in session errorbag data
          */
-        $errorBag =  Session::get(Validation::SESSION_VALIDATION_ERROR, new ErrorBag());
-        Session::delByKey(Validation::SESSION_VALIDATION_ERROR);
-        Session::put(self::ERROR_BAG, $errorBag);
+        $errorBag =  Session::get(Validation::SESSION_VALIDATION_ERROR);
 
-        /**
-         * if errorBag has errors
-         */
-        if (count($errorBag->getErrors()) <= 0) {
+        if ($errorBag) {
+            $errorBag = unserialize($errorBag);
+        } else {
+            $errorBag = new ErrorBag();
+        }
+
+        Session::delByKey(Validation::SESSION_VALIDATION_ERROR);
+        Session::put(self::ERROR_BAG, serialize($errorBag));
+
+        $errorCount = count($errorBag->getErrors());
+        if ($errorCount <= 0) {
             Session::delByKey(Validation::SESSION_OLD_VALUES);
         }
 
@@ -68,7 +83,7 @@ class App
          */
         $flashMessage = Session::get(FlashMessage::SESSION_FLASH_MESSAGE, new FlashMessage);
         Session::delByKey(FlashMessage::SESSION_FLASH_MESSAGE);
-        Session::put(self::FLASH_SESSION, $flashMessage);
+        Session::put(self::FLASH_SESSION, serialize($flashMessage));
     }
 
     public function run()

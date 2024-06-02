@@ -2,6 +2,10 @@
 
 namespace App\Cores;
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 class Session
 {
     /**
