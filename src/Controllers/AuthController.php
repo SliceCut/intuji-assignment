@@ -18,7 +18,7 @@ class AuthController extends BaseController
     {
         try{
             $this->authService->oauthToken($this->request);
-            return redirect("home");
+            return redirect("event");
         } catch (Exception $ex) {
             return $this->exceptionResponse($ex);
         }
@@ -27,5 +27,17 @@ class AuthController extends BaseController
     public function oauthRedirect()
     {
         return redirect($this->authService->oauthRedirect());
+    }
+
+    public function logout()
+    {
+        try {
+            $this->authService->logout();
+            return redirect("");
+        } catch (Exception $ex) {
+            return redirectBack([
+                "error" => $ex->getMessage()
+            ]);
+        }
     }
 }

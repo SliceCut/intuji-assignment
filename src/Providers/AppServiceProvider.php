@@ -11,5 +11,6 @@ class AppServiceProvider extends BaseProvider
     {
         $this->container->singleton(Auth::class, Auth::class);
         $this->mergeConfigFrom("config/oauth.php", "oauth");
+        $this->mergeConfigFrom("config/services.php", "services");
     }
 }

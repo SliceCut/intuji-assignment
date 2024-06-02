@@ -18,7 +18,7 @@ class FlashMessage
         return $this->messages;
     }
 
-    public function hasError($key): bool
+    public function has($key): bool
     {
         return (bool) ($this->messages[$key] ?? null);
     }

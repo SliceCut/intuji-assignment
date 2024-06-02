@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Cores\Request;
 use App\Cores\Session;
+use App\Services\Singleton\Auth;
 use App\Traits\HandleException;
 use Exception;
 use InvalidArgumentException;
@@ -14,7 +15,8 @@ class AuthService
 
     public function __construct(
         protected HttpService $httpService,
-        protected Session $session
+        protected Session $session,
+        protected Auth $auth
     ) {
     }
 
@@ -106,6 +108,25 @@ class AuthService
         $this->throwException($response);
 
         return $response["payload"];
+    }
+
+    public function oauthRevokeToken(string $token): void
+    {
+        $response = $this->httpService->post(
+            url: config("oauth.revoke_token_url"),
+            request_data: [
+                "token" => $token
+            ]
+        );
+        $this->throwException($response);
+    }
+
+    public function logout(): void
+    {
+        $this->oauthRevokeToken(
+            token: $this->auth->token()
+        );
+        $this->clearSession();
     }
 
     public function clearSession()

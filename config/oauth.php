@@ -7,6 +7,7 @@ return [
     "response_type" => env("OAUTH_RESPONSE_TYPE", "code"),
     "scope" => env("OAUTH_SCOPE"),
     "authorization_url" => env('OAUTH_AUTHORIZATION_URL'),
+    "api_key" => env("API_KEY"),
     "client_id" => env("OAUTH_CLIENT_ID"),
     "client_secret" => env("OAUTH_CLIENT_SECRET"),
     "token_url" => env("OAUTH_TOKEN_URL"),

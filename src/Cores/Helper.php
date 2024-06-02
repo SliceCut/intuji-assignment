@@ -53,7 +53,6 @@ function asset(string $path)
 function oldValue(string $key, string $default = "")
 {
     $oldValues = Session::get(Validation::SESSION_OLD_VALUES);
-
     return $oldValues[$key] ?? $default;
 }
 
@@ -72,11 +71,25 @@ function redirect(string $url, array $flashMessages = [])
         $target = str_replace('/\/\//g', '/', baseUrl($url));
     }
     header('Location: ' . $target);
+    exit;
 }
 
-function redirectExternal(string $url)
+/**
+ * redirect to previous url
+ * 
+ * @param array $flashMessages
+ */
+function redirectBack($flashMessages = [])
 {
-    header('Location: ' . $url);
+    $FlashMessageObj = new FlashMessage;
+    foreach ($flashMessages as $key => $value) {
+        $FlashMessageObj->setMessage($key, $value);
+    }
+
+    Session::put(FlashMessage::SESSION_FLASH_MESSAGE, $FlashMessageObj);
+
+    header('Location: ' . $_SERVER['HTTP_REFERER']);
+    exit;
 }
 
 function previousUrl()
@@ -175,4 +188,85 @@ function jsonResponse($data, $status_code = 200)
 function auth()
 {
     return app()->get(Auth::class);
+}
+
+/**
+ * Extract the date format from the value
+ *
+ * @param string $value
+ * @return bool|string
+ */
+function extractDateFormat($value)
+{
+    // Regular expression to match "date_format:" followed by any characters
+    $pattern = '/date_format:\s*(.+)/';
+    if (preg_match($pattern, $value, $matches)) {
+        return trim($matches[1]);
+    } else {
+        return false;
+    }
+}
+
+/**
+ * Check if value is date or date time
+ *
+ * @param string $value
+ * @return boolean
+ */
+function isDateOrDateTime($value)
+{
+    // Try to parse the string as a date or datetime
+    $timestamp = strtotime($value);
+
+    // If strtotime returns a valid timestamp, the string is a date or datetime
+    return $timestamp !== false;
+}
+
+function extractStringAfter($value, $after)
+{
+    $pattern = "/$after:(.+)/";
+    if (preg_match($pattern, $value, $matches)) {
+        return $matches[1];
+    } else {
+        return false;
+    }
+}
+
+/**
+ * Convert datetime to the RFC3339 format
+ *
+ * @param string $datetime
+ * @return string
+ */
+function convertDateTimeToRFC3339Format($datetime)
+{
+    $dateTimeObject = new DateTime($datetime);
+    return $dateTimeObject->format(DateTime::RFC3339);
+}
+
+/**
+ * Convert datetime to the formated datetime
+ *
+ * @param string $datetime
+ * @return string
+ */
+function formatDateTime($datetime, $format = "Y-m-d\TH:i")
+{
+    $dateTimeObject = new DateTime($datetime);
+    return $dateTimeObject->format($format);
+}
+
+function objectToArray($obj)
+{
+    if (is_object($obj)) {
+        $obj = (array) $obj;
+    }
+
+    if (is_array($obj)) {
+        foreach ($obj as $key => $value) {
+            $obj[$key] = objectToArray($value);
+        }
+    }
+
+    return $obj;
 }

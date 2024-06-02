@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Exceptions\HttpErrorException;
 use App\Exceptions\UnauthorizedException;
 use Exception;
 
@@ -15,14 +16,18 @@ trait HandleException
      */
     public function throwException($response): void
     {
-        if ($response["status"] != 200) {
+        if (!($response["status"] >= 200 && $response["status"] <= 204)) {
             if (in_array($response["status"], [401, 403])) {
                 throw new UnauthorizedException(
                     message: $response["payload"]["error"],
                     code: $response["status"]
                 );
             }
-            throw new Exception($response["payload"]["error"] ?? "Something went wrong while trying to consume apis.", $response["status"]);
+            throw new HttpErrorException(
+                message: $response["payload"]["error"]["message"] ?? "Something went wrong while trying to consume apis.",
+                code: $response["status"],
+                error: $response["payload"] ? $response["payload"] : []
+            );
         }
     }
 }
