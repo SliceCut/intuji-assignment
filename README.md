@@ -37,5 +37,3 @@ This project is about event mangement system where use will connect to google ca
 - Add Scopes
     - /auth/calendar
     - /auth/calendar.events
-    - /auth/userinfo.email
-    - /auth/userinfo.profile
